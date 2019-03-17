@@ -1,4 +1,5 @@
 let ceil = document.getElementsByClassName("game-item"),
+    table = document.getElementById("game"),
     reset = document.getElementById("reset-game"),
     message = document.getElementById("message"),
     player = "X",
@@ -16,24 +17,21 @@ let ceil = document.getElementsByClassName("game-item"),
     dataX = [],
     dataO = [];
 
-for (let i = 0; i < ceil.length; i++) {
-    ceil[i].addEventListener("click", currentStep);
-}
+table.addEventListener("click", currentStep);
 
-function currentStep() {
-    let num = +this.getAttribute("data-ceil");
-    if (!this.textContent) {
-        this.innerText = player;
+function currentStep(event) {
+    let currentTarget = event.target;
+    let num = +currentTarget.getAttribute("data-ceil");
+
+    if (!currentTarget.textContent) {
+        currentTarget.innerText = player;
         player === "X"
-            ? dataX.push(num) && this.classList.add("x")
-            : dataO.push(num) && this.classList.add("o");
+            ? dataX.push(num) && currentTarget.classList.add("x")
+            : dataO.push(num) && currentTarget.classList.add("o");
         if (
             (dataO.length > 2 || dataX.length > 2) &&
             (checkWin(dataO, num) || checkWin(dataX, num))
         ) {
-            for (let i = 0; i < ceil.length; i++) {
-                ceil[i].removeEventListener("click", currentStep);
-            }
             return (message.innerText = "Победил игрок " + player);
         }
         changePlayer();
@@ -49,9 +47,7 @@ function changePlayer() {
 }
 
 reset.addEventListener("click", function() {
-    for (let i = 0; i < ceil.length; i++) {
-        ceil[i].innerText = "";
-    }
+    table.addEventListener("click", currentStep);
     dataO = [];
     dataX = [];
     player = "O";

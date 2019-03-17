@@ -32,6 +32,7 @@ function currentStep(event) {
             (dataO.length > 2 || dataX.length > 2) &&
             (checkWin(dataO, num) || checkWin(dataX, num))
         ) {
+            table.removeEventListener("click", currentStep);
             return (message.innerText = "Победил игрок " + player);
         }
         changePlayer();
@@ -54,7 +55,6 @@ reset.addEventListener("click", function() {
     stepCount = 0;
     message.innerText = "Ходит игрок " + player;
     for (let i = 0; i < ceil.length; i++) {
-        ceil[i].addEventListener("click", currentStep);
         ceil[i].classList.remove("x", "o");
     }
 });

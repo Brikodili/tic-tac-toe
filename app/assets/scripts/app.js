@@ -2,20 +2,22 @@ let ceil = document.getElementsByClassName("game-item"),
     table = document.getElementById("game"),
     reset = document.getElementById("reset-game"),
     message = document.getElementById("message"),
-    player = "X",
+    player = "x",
     stepCount = 0,
     winCombinations = [
-        [1, 2, 3],
-        [1, 4, 7],
-        [1, 5, 9],
-        [2, 5, 8],
-        [3, 6, 9],
-        [3, 5, 7],
-        [4, 5, 6],
-        [7, 8, 9]
+        "123",
+        "147",
+        "159",
+        "258",
+        "369",
+        "357",
+        "456",
+        "789"
     ],
-    dataX = [],
-    dataO = [];
+    playerSequence = {
+        x: "",
+        o: "",
+    };
 
 table.addEventListener("click", currentStep);
 
@@ -25,16 +27,15 @@ function currentStep(event) {
 
     if (!currentTarget.textContent) {
         currentTarget.innerText = player;
-        player === "X"
-            ? dataX.push(num) && currentTarget.classList.add("x")
-            : dataO.push(num) && currentTarget.classList.add("o");
-        if (
-            (dataO.length > 2 || dataX.length > 2) &&
-            (checkWin(dataO, num) || checkWin(dataX, num))
-        ) {
+
+        playerSequence[player] += num;
+        currentTarget.classList.add(player);
+
+        if (playerSequence[player].length > 2 && isWin(playerSequence[player])) {
             table.removeEventListener("click", currentStep);
             return (message.innerText = "Победил игрок " + player);
         }
+
         changePlayer();
         stepCount++;
         stepCount === 9
@@ -44,35 +45,25 @@ function currentStep(event) {
 }
 
 function changePlayer() {
-    player === "X" ? (player = "O") : (player = "X");
+    player === "x" ? (player = "o") : (player = "x");
 }
 
 reset.addEventListener("click", function() {
     table.addEventListener("click", currentStep);
-    dataO = [];
-    dataX = [];
-    player = "O";
+    playerSequence = {
+        x: "",
+        o: "",
+    };
+    player = "o";
     stepCount = 0;
     message.innerText = "Ходит игрок " + player;
     for (let i = 0; i < ceil.length; i++) {
-        ceil[i].classList.remove("x", "o");
+        ceil[i].innerText = "";
     }
 });
 
-function checkWin(arr, number) {
-    for (let w = 0, wLen = winCombinations.length; w < wLen; w++) {
-        let someWinArr = winCombinations[w],
-            count = 0;
-        if (someWinArr.indexOf(number) !== -1) {
-            for (let k = 0, kLen = someWinArr.length; k < kLen; k++) {
-                if (arr.indexOf(someWinArr[k]) !== -1) {
-                    count++;
-                    if (count === 3) {
-                        return true;
-                    }
-                }
-            }
-            count = 0;
-        }
-    }
+function isWin(sequence) {
+    return winCombinations.some(function(elem) {
+        return elem === sequence;
+    });
 }

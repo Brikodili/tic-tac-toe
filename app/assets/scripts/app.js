@@ -24,7 +24,7 @@ table.addEventListener("click", currentStep);
 function currentStep(event) {
     let currentTarget = event.target;
     let num = +currentTarget.getAttribute("data-ceil");
-
+  console.log('Hello my friend')
     if (!currentTarget.textContent) {
         currentTarget.innerText = player;
 
